@@ -22,8 +22,22 @@ function beat() {
   fx.later(1900 + Math.random() * 1300, beat)
 }
 
+function bigBeat() {
+  if (!fx) return
+  if (!fx.calm) {
+    const right = Math.random() < 0.5
+    const top = Math.random() < 0.5
+    const x = scrollX + (right ? innerWidth - 110 : 110)
+    const y = scrollY + (top ? 150 : innerHeight - 150)
+    fx.burst(x, y, { r: 48, spikes: 13, life: 0.44 })
+    fx.puff(x + (right ? -26 : 26), y, { size: 8, n: 3, vx: right ? -16 : 16, vy: -12, life: 0.7 })
+  }
+  fx.later(12_000 + Math.random() * 9000, bigBeat)
+}
+
 export function startAmbient() {
   if (running || !fx) return
   running = true
   fx.later(1600, beat)
+  fx.later(9000, bigBeat)
 }

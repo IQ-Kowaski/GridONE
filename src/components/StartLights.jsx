@@ -1,6 +1,5 @@
 import { motion, useReducedMotion } from 'framer-motion'
-import { useEffect, useRef, useState } from 'react'
-import { impact } from '../lib/fx'
+import { useEffect, useState } from 'react'
 
 const LIGHT_COUNT = 5
 const STEP_MS = 550
@@ -9,7 +8,6 @@ export default function StartLights({ className = '' }) {
   const reduced = useReducedMotion()
   const [lit, setLit] = useState(0)
   const [phase, setPhase] = useState(reduced ? 'off' : 'red')
-  const row = useRef(null)
 
   useEffect(() => {
     if (reduced) {
@@ -21,17 +19,14 @@ export default function StartLights({ className = '' }) {
     }
     timers.push(setTimeout(() => setPhase('green'), LIGHT_COUNT * STEP_MS + 700))
     timers.push(
-      setTimeout(() => {
-        setPhase('off')
-        impact(row.current)
-      }, LIGHT_COUNT * STEP_MS + 1900)
+      setTimeout(() => setPhase('off'), LIGHT_COUNT * STEP_MS + 1900)
     )
     return () => timers.forEach(clearTimeout)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduced])
 
   return (
-    <div ref={row} className={`flex items-center gap-3 md:gap-4 ${className}`} aria-hidden="true">
+    <div className={`flex items-center gap-3 md:gap-4 ${className}`} aria-hidden="true">
       {Array.from({ length: LIGHT_COUNT }).map((_, i) => {
         const isRed = phase === 'red' && i < lit
         const isGreen = phase === 'green'

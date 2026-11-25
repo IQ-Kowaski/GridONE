@@ -1,6 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
 import { isRefreshEnabled, onRefreshChange } from './refresh'
-import { notify } from './notify'
 
 /**
  * Runs `fetcher` immediately, then again every `intervalMs`, keeping the
@@ -36,15 +35,6 @@ export function usePolling(fetcher, intervalMs = 60_000, deps = []) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)
-
-  const seen = useRef(false)
-  useEffect(() => {
-    if (!seen.current) {
-      seen.current = true
-      return
-    }
-    notify(state.error ? 'Feed unavailable — retrying…' : 'Feed refreshed')
-  }, [state.error, state.updatedAt])
 
   return state
 }
