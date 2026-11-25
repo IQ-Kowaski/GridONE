@@ -106,6 +106,11 @@
     text-transform: uppercase;
     color: var(--color-signal-dim);
   }
+  sakuga-toggle { margin: 0 !important; }
+  sakuga-slider { margin-top: 0; }
+  sakuga-checkbox, sakuga-radio, sakuga-rating { margin-top: 8px; }
+  sakuga-input { --sk-input-width: 260px; }
+  sakuga-toggle.compact { transform: scale(0.82); transform-origin: left center; }
   .stream-button::part(button) {
     display: block;
     width: 100%;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { isRefreshEnabled, onRefreshChange } from './refresh'
 import { notify } from './notify'
 
 /**
@@ -15,19 +16,23 @@ export function usePolling(fetcher, intervalMs = 60_000, deps = []) {
     let cancelled = false
 
     async function run() {
-      try {
-        const data = await fetcherRef.current()
-        if (!cancelled) setState({ data, error: null, loading: false, updatedAt: new Date() })
-      } catch (err) {
-        if (!cancelled) setState((s) => ({ ...s, error: err, loading: false }))
+      if (!cancelled && isRefreshEnabled()) {
+        try {
+          const data = await fetcherRef.current()
+          if (!cancelled) setState({ data, error: null, loading: false, updatedAt: new Date() })
+        } catch (err) {
+          if (!cancelled) setState((s) => ({ ...s, error: err, loading: false }))
+        }
       }
     }
 
     run()
     const id = setInterval(run, intervalMs)
+    const unsubscribe = onRefreshChange((on) => { if (on) run() })
     return () => {
       cancelled = true
       clearInterval(id)
+      unsubscribe()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps)

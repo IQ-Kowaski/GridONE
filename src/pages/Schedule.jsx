@@ -1,19 +1,34 @@
+import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
 import LiveBadge from '../components/LiveBadge'
 import SakugaProgress from '../components/sakuga/SakugaProgress'
+import { SakugaCheckbox } from '../components/sakuga/Controls'
 
 export default function Schedule() {
+  const [showPast, setShowPast] = useState(false)
   const { data: schedule, loading, error } = usePolling(fetchSchedule, 5 * 60_000)
   const isLive = schedule ? !!deriveLiveSession(schedule) : false
   const now = Date.now()
 
+  const visible = schedule?.filter((race) => {
+    if (showPast) return true
+    const raceSession = race.sessions.find((s) => s.label === 'Race')
+    return !raceSession || raceSession.at.getTime() >= now
+  })
+
   return (
-    <div className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
+    <div className="mx-auto max-w-none px-6 py-12 md:px-10 md:py-16">
       <p className="sakuga-eyebrow mb-2">Season calendar</p>
-      <h1 className="mb-8 text-4xl text-[var(--color-paper)] md:text-5xl">Race Schedule</h1>
+      <h1 className="mb-6 text-4xl text-[var(--color-paper)] md:text-5xl">Race Schedule</h1>
+
+      <div className="mb-8">
+        <SakugaCheckbox checked={showPast} onChange={setShowPast}>
+          Show past rounds
+        </SakugaCheckbox>
+      </div>
 
       {error && (
         <p className="mb-6 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
@@ -28,7 +43,7 @@ export default function Schedule() {
       )}
 
       <ol className="space-y-4">
-        {schedule?.map((race, i) => {
+        {visible?.map((race, i) => {
           const raceSession = race.sessions.find((s) => s.label === 'Race')
           const isPast = raceSession && raceSession.at.getTime() < now
           const isThisRaceLive = isLive && !isPast && raceSession && now - raceSession.at.getTime() > -3 * 3600_000

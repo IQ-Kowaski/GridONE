@@ -20,7 +20,7 @@ export default function Nav() {
 
   return (
     <header className="sticky top-0 z-40 border-b-[1.5px] border-[var(--color-hairline)] bg-white">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
+      <div className="mx-auto flex max-w-none items-center justify-between px-6 py-3 md:px-10">
         <a href="/" className="flex items-center gap-2.5" translate="no">
           <span className="inline-block h-3 w-3 rotate-12 rounded-[4px] border-2 border-[var(--color-paper)] bg-[var(--color-signal)]" aria-hidden="true" />
           <span className="font-display text-xl font-extrabold tracking-tight text-[var(--color-paper)]">
@@ -53,7 +53,7 @@ export default function Nav() {
         </div>
       </div>
 
-      <nav className="flex items-center gap-5 overflow-x-auto border-t-[1.5px] border-[var(--color-hairline)] px-5 py-2 md:hidden" aria-label="Primary">
+      <nav className="flex items-center gap-5 overflow-x-auto border-t-[1.5px] border-[var(--color-hairline)] px-6 py-2 md:hidden" aria-label="Primary">
         {links.map((l) => (
           <NavLink
             key={l.to}

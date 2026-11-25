@@ -5,7 +5,7 @@ import { impact } from '../lib/fx'
 const LIGHT_COUNT = 5
 const STEP_MS = 550
 
-export default function StartLights({ onOut, className = '' }) {
+export default function StartLights({ className = '' }) {
   const reduced = useReducedMotion()
   const [lit, setLit] = useState(0)
   const [phase, setPhase] = useState(reduced ? 'off' : 'red')
@@ -13,7 +13,6 @@ export default function StartLights({ onOut, className = '' }) {
 
   useEffect(() => {
     if (reduced) {
-      onOut?.()
       return
     }
     const timers = []
@@ -25,7 +24,6 @@ export default function StartLights({ onOut, className = '' }) {
       setTimeout(() => {
         setPhase('off')
         impact(row.current)
-        onOut?.()
       }, LIGHT_COUNT * STEP_MS + 1900)
     )
     return () => timers.forEach(clearTimeout)

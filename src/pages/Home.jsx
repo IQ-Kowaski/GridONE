@@ -1,10 +1,13 @@
+import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Hero from '../components/Hero'
 import Countdown from '../components/Countdown'
 import LiveBadge from '../components/LiveBadge'
 import SakugaButton from '../components/sakuga/SakugaButton'
+import { SakugaToggle } from '../components/sakuga/Controls'
 import { usePolling } from '../lib/usePolling'
+import { isRefreshEnabled, setRefreshEnabled } from '../lib/refresh'
 import { fetchSchedule, fetchDriverStandings, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
 import { driverImg, initials } from '../lib/driverAssets'
@@ -26,7 +29,7 @@ function DriverCard({ driver: d, index, leaderPoints }) {
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ type: 'spring', stiffness: 300, damping: 24, delay: index * 0.05 }}
+      transition={{ type: 'spring', stiffness: 300, damping: 24, delay: index * 0.04 }}
       whileHover={{ y: -5 }}
       className="sakuga-card group relative p-4"
     >
@@ -84,6 +87,7 @@ function nextSession(schedule) {
 
 export default function Home() {
   const navigate = useNavigate()
+  const [autoRefresh, setAutoRefresh] = useState(isRefreshEnabled())
   const { data: schedule, loading: loadingSchedule, error: scheduleError } = usePolling(
     fetchSchedule,
     5 * 60_000
@@ -93,9 +97,19 @@ export default function Home() {
   const session = schedule ? nextSession(schedule) : null
   const isLive = schedule ? !!deriveLiveSession(schedule) : false
 
+  const toggleRefresh = (value) => {
+    setAutoRefresh(value)
+    setRefreshEnabled(value)
+  }
+
   return (
     <>
       <Hero nextRace={session?.race}>
+        <div className="mb-5 flex flex-wrap items-center justify-between gap-3 border-b-[1.5px] border-[var(--color-hairline)] pb-4">
+          <span className="sakuga-eyebrow">Live updates</span>
+          <SakugaToggle className="compact" label="Auto refresh" checked={autoRefresh} onChange={toggleRefresh} />
+        </div>
+
         {scheduleError && (
           <p className="mb-4 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
             Couldn't reach the schedule feed. Retrying automatically…
@@ -103,11 +117,11 @@ export default function Home() {
         )}
 
         {loadingSchedule && !schedule && (
-          <p className="text-sm text-[var(--color-paper-dim)]">Loading session clock…</p>
+          <p className="mb-4 text-sm text-[var(--color-paper-dim)]">Loading session clock…</p>
         )}
 
         {session && (
-          <div>
+          <div className="mb-6">
             <div className="mb-3 flex items-center gap-3">
               {isLive && <LiveBadge />}
               <span className="font-display text-lg font-extrabold text-[var(--color-paper)]">
@@ -118,7 +132,7 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mt-9 flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           <SakugaButton variant="secondary" onClick={() => navigate('/watch')}>
             {isLive ? 'Watch live' : 'Watch'}
           </SakugaButton>
@@ -129,7 +143,7 @@ export default function Home() {
         </div>
       </Hero>
 
-      <section className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-20">
+      <section className="mx-auto max-w-none px-6 py-14 md:px-10 md:py-20">
         <div className="mb-6 flex items-baseline justify-between gap-4">
           <h2 className="text-3xl text-[var(--color-paper)] md:text-4xl">
             Drivers' Championship
@@ -143,16 +157,16 @@ export default function Home() {
         </div>
 
         {!drivers && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {Array.from({ length: 5 }).map((_, i) => (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className="sakuga-card h-44 animate-pulse" />
             ))}
           </div>
         )}
 
         {drivers && (
-          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
-            {drivers.slice(0, 5).map((d, i) => (
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+            {drivers.slice(0, 6).map((d, i) => (
               <DriverCard key={d.driverId} driver={d} index={i} leaderPoints={drivers[0]?.points ?? 1} />
             ))}
           </div>

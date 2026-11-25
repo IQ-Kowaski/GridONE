@@ -40,7 +40,7 @@ export default function Watch() {
   }, [session?.race?.round, session?.label])
 
   return (
-    <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
+    <div className="mx-auto max-w-none px-6 py-12 md:px-10 md:py-16">
       <p className="sakuga-eyebrow mb-2">Live coverage</p>
       <h1 className="mb-8 text-4xl text-[var(--color-paper)] md:text-5xl">Watch</h1>
 
