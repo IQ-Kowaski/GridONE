@@ -19,24 +19,26 @@ export default function Nav() {
   const utc = now.toISOString().slice(11, 19)
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--color-hairline)] bg-[var(--color-ink)]/90 backdrop-blur">
+    <header className="sticky top-0 z-40 border-b-[1.5px] border-[var(--color-hairline)] bg-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3 md:px-8">
         <a href="/" className="flex items-center gap-2.5" translate="no">
-          <span className="inline-block h-2.5 w-2.5 rounded-full bg-[var(--color-signal)]" aria-hidden="true" />
-          <span className="font-display text-lg tracking-wide text-[var(--color-paper)]">
-            GRID WATCH
+          <span className="inline-block h-3 w-3 rotate-12 rounded-[4px] border-2 border-[var(--color-paper)] bg-[var(--color-signal)]" aria-hidden="true" />
+          <span className="font-display text-xl font-extrabold tracking-tight text-[var(--color-paper)]">
+            Grid Watch
           </span>
         </a>
 
-        <nav className="hidden items-center gap-6 md:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-2 md:flex" aria-label="Primary">
           {links.map((l) => (
             <NavLink
               key={l.to}
               to={l.to}
               end={l.to === '/'}
               className={({ isActive }) =>
-                `text-sm font-medium transition-colors hover:text-[var(--color-signal)] ${
-                  isActive ? 'text-[var(--color-signal)]' : 'text-[var(--color-paper-dim)]'
+                `rounded-full px-3 py-1.5 text-sm font-semibold transition-colors ${
+                  isActive
+                    ? 'bg-[var(--color-panel-2)] text-[var(--color-signal)]'
+                    : 'text-[var(--color-paper-dim)] hover:bg-[var(--color-panel-2)] hover:text-[var(--color-paper)]'
                 }`
               }
             >
@@ -45,20 +47,20 @@ export default function Nav() {
           ))}
         </nav>
 
-        <div className="hidden items-center gap-1.5 font-mono text-xs text-[var(--color-paper-dim)] sm:flex">
-          <span>UTC</span>
-          <time className="tnum text-[var(--color-paper)]">{utc}</time>
+        <div className="hidden rounded-full border-[1.5px] border-[var(--color-hairline)] bg-[var(--color-panel-2)] px-3 py-1 sm:flex sm:items-center sm:gap-2">
+          <span className="text-[11px] font-semibold uppercase tracking-wider text-[var(--color-paper-dim)]">UTC</span>
+          <time className="tnum text-xs font-semibold text-[var(--color-paper)]">{utc}</time>
         </div>
       </div>
 
-      <nav className="flex items-center gap-5 border-t border-[var(--color-hairline)] px-5 py-2 md:hidden" aria-label="Primary">
+      <nav className="flex items-center gap-5 overflow-x-auto border-t-[1.5px] border-[var(--color-hairline)] px-5 py-2 md:hidden" aria-label="Primary">
         {links.map((l) => (
           <NavLink
             key={l.to}
             to={l.to}
             end={l.to === '/'}
             className={({ isActive }) =>
-              `text-sm font-medium ${isActive ? 'text-[var(--color-signal)]' : 'text-[var(--color-paper-dim)]'}`
+              `shrink-0 text-sm font-semibold ${isActive ? 'text-[var(--color-signal)]' : 'text-[var(--color-paper-dim)]'}`
             }
           >
             {l.label}

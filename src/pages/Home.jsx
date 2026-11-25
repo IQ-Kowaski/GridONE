@@ -1,30 +1,38 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import Hero from '../components/Hero'
 import Countdown from '../components/Countdown'
 import LiveBadge from '../components/LiveBadge'
+import SakugaButton from '../components/sakuga/SakugaButton'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, fetchDriverStandings, deriveLiveSession } from '../lib/api'
 import { formatSessionTime } from '../lib/format'
-import { driverImg, constructorColor, initials } from '../lib/driverAssets'
+import { driverImg, initials } from '../lib/driverAssets'
+
+const TONES = [
+  { bg: '#f4f3fc', ink: '#5a4fd8' },
+  { bg: '#b8b3ff', ink: '#1d1a4a' },
+  { bg: '#ffd1e6', ink: '#1d1a4a' },
+  { bg: '#8f8df7', ink: '#1d1a4a' },
+  { bg: '#dcdaf0', ink: '#1d1a4a' },
+]
 
 function DriverCard({ driver: d, index, leaderPoints }) {
   const imgUrl = driverImg(d.code)
-  const cc = constructorColor(d.constructor)
+  const tone = TONES[(d.position - 1) % TONES.length]
+  const share = Math.min(100, leaderPoints > 0 ? (d.points / leaderPoints) * 100 : 0)
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: index * 0.05, duration: 0.4, ease: 'easeOut' }}
-      whileHover={{ y: -4 }}
-      className="group relative rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-4 transition-all hover:border-[var(--color-signal)]/40 hover:bg-[var(--color-panel-2)] hover:shadow-lg hover:shadow-[var(--color-signal)]/5"
+      transition={{ type: 'spring', stiffness: 300, damping: 24, delay: index * 0.05 }}
+      whileHover={{ y: -5 }}
+      className="sakuga-card group relative p-4"
     >
       <span
-        className={`tnum absolute right-2 top-2 z-10 flex h-5 w-5 items-center justify-center rounded text-[10px] font-bold ${
-          d.position === 1
-            ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
-            : 'bg-[var(--color-panel-2)] text-[var(--color-paper-dim)]'
+        className={`tnum absolute right-2 top-2 z-10 flex h-6 w-6 items-center justify-center rounded-lg text-[11px] font-extrabold ${
+          d.position === 1 ? 'bg-[var(--color-signal)] text-white' : 'border-2 border-[var(--color-hairline)] bg-white text-[var(--color-paper-dim)]'
         }`}
       >
         {d.position}
@@ -35,18 +43,15 @@ function DriverCard({ driver: d, index, leaderPoints }) {
           <img
             src={imgUrl}
             alt={d.name}
-            className="h-16 w-16 rounded-full object-cover ring-2 ring-[var(--color-hairline)] transition-all group-hover:scale-105 group-hover:ring-[var(--color-signal)]/40"
+            className="h-16 w-16 rounded-full border-[2.5px] border-[var(--color-paper)] object-cover transition-transform group-hover:scale-105"
             loading="lazy"
           />
         ) : (
           <div
-            className="flex h-16 w-16 items-center justify-center rounded-full ring-2 ring-[var(--color-hairline)] transition-all group-hover:scale-105 group-hover:ring-[var(--color-signal)]/40"
-            style={{ backgroundColor: cc.bg }}
+            className="flex h-16 w-16 items-center justify-center rounded-full border-[2.5px] border-[var(--color-paper)] transition-transform group-hover:scale-105"
+            style={{ backgroundColor: tone.bg }}
           >
-            <span
-              className="text-sm font-bold tracking-wide"
-              style={{ color: cc.accent }}
-            >
+            <span className="text-sm font-extrabold tracking-wide" style={{ color: tone.ink }}>
               {initials(d.name)}
             </span>
           </div>
@@ -54,18 +59,15 @@ function DriverCard({ driver: d, index, leaderPoints }) {
       </div>
 
       <div className="text-center">
-        <p className="truncate text-sm font-semibold text-[var(--color-paper)]">{d.code}</p>
+        <p className="truncate font-display text-lg font-extrabold text-[var(--color-paper)]">{d.code}</p>
         <p className="truncate text-xs text-[var(--color-paper-dim)]">{d.constructor}</p>
       </div>
 
-      <div className="mt-3 flex items-center justify-center gap-1.5 border-t border-[var(--color-hairline)] pt-2.5">
-        <div className="h-1 w-12 overflow-hidden rounded-full bg-[var(--color-hairline)]">
-          <div
-            className="h-full rounded-full transition-all group-hover:opacity-80"
-            style={{ backgroundColor: cc.accent, width: `${Math.min(100, leaderPoints > 0 ? (d.points / leaderPoints) * 100 : 0)}%` }}
-          />
+      <div className="mt-3 flex items-center justify-center gap-2 border-t-[1.5px] border-[var(--color-hairline)] pt-2.5">
+        <div className="h-2 w-12 overflow-hidden rounded-full border-[1.5px] border-[var(--color-hairline)] bg-white">
+          <div className="h-full rounded-full bg-[var(--color-signal-dim)]" style={{ width: `${share}%` }} />
         </div>
-        <span className="tnum font-mono text-sm font-semibold" style={{ color: cc.accent }}>
+        <span className="tnum text-sm font-extrabold" style={{ color: tone.ink }}>
           {d.points}
         </span>
       </div>
@@ -81,6 +83,7 @@ function nextSession(schedule) {
 }
 
 export default function Home() {
+  const navigate = useNavigate()
   const { data: schedule, loading: loadingSchedule, error: scheduleError } = usePolling(
     fetchSchedule,
     5 * 60_000
@@ -94,20 +97,20 @@ export default function Home() {
     <>
       <Hero nextRace={session?.race}>
         {scheduleError && (
-          <p className="mb-4 text-sm text-[var(--color-red-flag)]" role="alert">
+          <p className="mb-4 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
             Couldn't reach the schedule feed. Retrying automatically…
           </p>
         )}
 
         {loadingSchedule && !schedule && (
-          <p className="font-mono text-sm text-[var(--color-paper-dim)]">Loading session clock…</p>
+          <p className="text-sm text-[var(--color-paper-dim)]">Loading session clock…</p>
         )}
 
         {session && (
           <div>
             <div className="mb-3 flex items-center gap-3">
               {isLive && <LiveBadge />}
-              <span className="text-sm font-medium text-[var(--color-paper)]">
+              <span className="font-display text-lg font-extrabold text-[var(--color-paper)]">
                 {session.label} · {formatSessionTime(session.at)}
               </span>
             </div>
@@ -115,54 +118,40 @@ export default function Home() {
           </div>
         )}
 
-        <div className="mt-9 flex flex-wrap gap-3">
-          <Link
-            to="/watch"
-            className="rounded-sm border border-[var(--color-red-flag)]/50 px-5 py-2.5 text-sm font-semibold text-[var(--color-red-flag)] transition-colors hover:bg-[var(--color-red-flag)]/10"
-          >
+        <div className="mt-9 flex flex-wrap items-center gap-3">
+          <SakugaButton variant="secondary" onClick={() => navigate('/watch')}>
             {isLive ? 'Watch live' : 'Watch'}
-          </Link>
-          <Link
-            to="/schedule"
-            className="rounded-sm bg-[var(--color-signal)] px-5 py-2.5 text-sm font-semibold text-[var(--color-ink)] transition-transform hover:scale-[1.02] focus-visible:scale-[1.02]"
-          >
-            Full race calendar
-          </Link>
-          <Link
-            to="/standings"
-            className="rounded-sm border border-[var(--color-hairline)] px-5 py-2.5 text-sm font-semibold text-[var(--color-paper)] transition-colors hover:border-[var(--color-signal)] hover:text-[var(--color-signal)]"
-          >
+          </SakugaButton>
+          <SakugaButton onClick={() => navigate('/schedule')}>Full race calendar</SakugaButton>
+          <SakugaButton variant="secondary" onClick={() => navigate('/standings')}>
             Championship standings
-          </Link>
+          </SakugaButton>
         </div>
       </Hero>
 
       <section className="mx-auto max-w-6xl px-5 py-14 md:px-8 md:py-20">
-        <div className="mb-6 flex items-baseline justify-between">
-          <h2 className="font-display text-3xl text-[var(--color-paper)] md:text-4xl">
+        <div className="mb-6 flex items-baseline justify-between gap-4">
+          <h2 className="text-3xl text-[var(--color-paper)] md:text-4xl">
             Drivers' Championship
           </h2>
           <Link
             to="/standings"
-            className="text-sm font-medium text-[var(--color-signal)] hover:underline"
+            className="shrink-0 text-sm font-bold text-[var(--color-signal)] underline decoration-2 underline-offset-4 hover:text-[var(--color-paper)]"
           >
             View full table →
           </Link>
         </div>
 
         {!drivers && (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {Array.from({ length: 5 }).map((_, i) => (
-              <div
-                key={i}
-                className="h-44 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]"
-              />
+              <div key={i} className="sakuga-card h-44 animate-pulse" />
             ))}
           </div>
         )}
 
         {drivers && (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {drivers.slice(0, 5).map((d, i) => (
               <DriverCard key={d.driverId} driver={d} index={i} leaderPoints={drivers[0]?.points ?? 1} />
             ))}

@@ -6,16 +6,16 @@ export default function StandingsTable({ title, rows, renderPrimary, renderSecon
   return (
     <section aria-labelledby={`${title}-heading`} className="relative">
       <div className="mb-4 flex items-baseline justify-between gap-4">
-        <h3 id={`${title}-heading`} className="font-display text-2xl tracking-wide text-[var(--color-paper)] md:text-3xl">
+        <h3 id={`${title}-heading`} className="text-2xl text-[var(--color-paper)] md:text-3xl">
           {title}
         </h3>
         {caption && <p className="text-xs text-[var(--color-paper-dim)]">{caption}</p>}
       </div>
 
-      <div className="overflow-hidden rounded-lg border border-[var(--color-hairline)]">
+      <div className="sakuga-card overflow-hidden">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-[var(--color-hairline)] bg-[var(--color-panel-2)] text-xs uppercase tracking-[0.14em] text-[var(--color-paper-dim)]">
+            <tr className="border-b-[1.5px] border-[var(--color-hairline)] bg-[var(--color-panel-2)] text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-paper-dim)]">
               <th scope="col" className="w-14 px-3 py-2.5 md:px-4">
                 Pos
               </th>
@@ -39,22 +39,22 @@ export default function StandingsTable({ title, rows, renderPrimary, renderSecon
                   layout
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.035, duration: 0.35, ease: 'easeOut' }}
-                  className="border-b border-[var(--color-hairline)] last:border-b-0 odd:bg-[var(--color-panel)] even:bg-[var(--color-ink-2)]"
+                  transition={{ type: 'spring', stiffness: 320, damping: 26, delay: i * 0.025 }}
+                  className="border-b-[1.5px] border-[var(--color-hairline)] last:border-b-0 odd:bg-white even:bg-[var(--color-panel-2)]"
                 >
                   <td className="px-3 py-3 md:px-4">
                     <span
-                      className={`tnum inline-flex h-7 w-7 items-center justify-center rounded-sm text-sm font-semibold ${
+                      className={`tnum inline-flex h-7 w-7 items-center justify-center rounded-lg text-sm font-extrabold ${
                         row.position === 1
-                          ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
-                          : 'bg-[var(--color-panel-2)] text-[var(--color-paper)]'
+                          ? 'bg-[var(--color-signal)] text-white'
+                          : 'border-2 border-[var(--color-hairline)] bg-white text-[var(--color-paper)]'
                       }`}
                     >
                       {row.position}
                     </span>
                   </td>
                   <td className="px-3 py-3 md:px-4">
-                    <div className="font-medium text-[var(--color-paper)]">{renderPrimary(row)}</div>
+                    <div className="font-bold text-[var(--color-paper)]">{renderPrimary(row)}</div>
                     <div className="text-xs text-[var(--color-paper-dim)]">{renderSecondary(row)}</div>
                   </td>
                   <td className="tnum hidden px-3 py-3 text-[var(--color-paper-dim)] sm:table-cell md:px-4">
@@ -62,13 +62,13 @@ export default function StandingsTable({ title, rows, renderPrimary, renderSecon
                   </td>
                   <td className="px-3 py-3 md:px-4">
                     <div className="flex items-center justify-end gap-2">
-                      <div className="hidden h-1.5 w-16 overflow-hidden rounded-full bg-[var(--color-hairline)] sm:block">
+                      <div className="hidden h-2 w-16 overflow-hidden rounded-full border-[1.5px] border-[var(--color-hairline)] bg-white sm:block">
                         <div
-                          className="h-full rounded-full bg-[var(--color-signal)]"
+                          className="h-full rounded-full bg-[var(--color-signal-dim)]"
                           style={{ width: `${share}%` }}
                         />
                       </div>
-                      <span className="tnum w-12 text-right font-semibold text-[var(--color-paper)]">
+                      <span className="tnum w-12 text-right font-bold text-[var(--color-paper)]">
                         {row.points}
                       </span>
                     </div>

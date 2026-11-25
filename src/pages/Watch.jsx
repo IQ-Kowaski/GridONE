@@ -2,9 +2,11 @@ import { usePolling } from '../lib/usePolling'
 import { fetchSchedule } from '../lib/api'
 import { getStreamsForSession } from '../lib/streamProvider'
 import { useEffect, useState } from 'react'
-import StreamPlayer, { StreamPlayerSkeleton } from '../components/StreamPlayer'
+import StreamPlayer from '../components/StreamPlayer'
 import LiveBadge from '../components/LiveBadge'
 import Countdown from '../components/Countdown'
+import SakugaTooltip from '../components/sakuga/SakugaTooltip'
+import SakugaProgress from '../components/sakuga/SakugaProgress'
 import { formatSessionTime } from '../lib/format'
 
 function currentOrNextSession(schedule) {
@@ -39,18 +41,20 @@ export default function Watch() {
 
   return (
     <div className="mx-auto max-w-7xl px-5 py-12 md:px-8 md:py-16">
-      <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-[var(--color-signal)]">
-        Live coverage
-      </p>
-      <h1 className="mb-8 font-display text-4xl text-[var(--color-paper)] md:text-5xl">Watch</h1>
+      <p className="sakuga-eyebrow mb-2">Live coverage</p>
+      <h1 className="mb-8 text-4xl text-[var(--color-paper)] md:text-5xl">Watch</h1>
 
       {error && (
-        <p className="mb-6 text-sm text-[var(--color-red-flag)]" role="alert">
+        <p className="mb-6 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
           Couldn't reach the schedule feed. Retrying automatically…
         </p>
       )}
 
-      {loading && !schedule && <StreamPlayerSkeleton />}
+      {loading && !schedule && (
+        <div className="sakuga-card flex min-h-64 items-center justify-center p-8">
+          <SakugaProgress label="Loading coverage" />
+        </div>
+      )}
 
       {schedule && !session && (
         <p className="text-sm text-[var(--color-paper-dim)]">No upcoming sessions found.</p>
@@ -58,23 +62,31 @@ export default function Watch() {
 
       {session && (
         <>
-          <div className="mb-4 flex flex-wrap items-center justify-between gap-4">
+          <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
             <div>
-              <div className="mb-1 flex items-center gap-2">
+              <div className="mb-1 flex flex-wrap items-center gap-2">
                 {isLive && <LiveBadge />}
-                <h2 className="font-display text-2xl text-[var(--color-paper)]">
+                <h2 className="text-2xl text-[var(--color-paper)]">
                   {session.race.name} · {session.label}
                 </h2>
               </div>
-              <p className="text-sm text-[var(--color-paper-dim)]">
-                {session.race.circuit} · {formatSessionTime(session.at)}
-              </p>
+              <div className="flex items-center gap-2">
+                <p className="text-sm text-[var(--color-paper-dim)]">
+                  {session.race.circuit} · {formatSessionTime(session.at)}
+                </p>
+                <SakugaTooltip
+                  label="About session times"
+                  text="Times are shown in your local timezone."
+                />
+              </div>
             </div>
             {!isLive && <Countdown target={session.at} />}
           </div>
 
           {feeds === null ? (
-            <StreamPlayerSkeleton />
+            <div className="sakuga-card flex min-h-64 items-center justify-center p-8">
+              <SakugaProgress label="Finding streams" />
+            </div>
           ) : (
             <StreamPlayer feeds={feeds} sessionLabel={`${session.race.name} · ${session.label}`} />
           )}

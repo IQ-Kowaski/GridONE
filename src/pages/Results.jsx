@@ -3,6 +3,8 @@ import { motion } from 'framer-motion'
 import { usePolling } from '../lib/usePolling'
 import { fetchSchedule, fetchRaceResults, fetchQualifyingResults, fetchSprintResults } from '../lib/api'
 import ResultsTable from '../components/ResultsTable'
+import SakugaTabs from '../components/sakuga/SakugaTabs'
+import SakugaProgress from '../components/sakuga/SakugaProgress'
 
 const SESSIONS = [
   { key: 'race', label: 'Race', fetcher: fetchRaceResults },
@@ -12,7 +14,9 @@ const SESSIONS = [
 
 function TableSkeleton() {
   return (
-    <div className="h-64 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]" />
+    <div className="sakuga-card flex min-h-64 items-center justify-center p-8">
+      <SakugaProgress label="Loading session results" />
+    </div>
   )
 }
 
@@ -58,25 +62,21 @@ export default function Results() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
-      <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-[var(--color-signal)]">
-        Session results
-      </p>
-      <h1 className="mb-8 font-display text-4xl text-[var(--color-paper)] md:text-5xl">
-        Results
-      </h1>
+      <p className="sakuga-eyebrow mb-2">Session results</p>
+      <h1 className="mb-8 text-4xl text-[var(--color-paper)] md:text-5xl">Results</h1>
 
       {scheduleError && (
-        <p className="mb-6 text-sm text-[var(--color-red-flag)]" role="alert">
+        <p className="mb-6 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
           Couldn't reach the schedule feed. Retrying automatically…
         </p>
       )}
 
-      <div className="mb-8 flex flex-wrap items-center gap-4">
+      <div className="mb-10 flex flex-wrap items-center gap-x-6 gap-y-5">
         <div className="relative">
           <select
             value={round ?? ''}
             onChange={(e) => setRound(Number(e.target.value))}
-            className="appearance-none rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] px-4 py-2.5 pr-10 text-sm font-medium text-[var(--color-paper)] transition-colors hover:border-[var(--color-paper-dim)] focus:outline-none focus-visible:border-[var(--color-signal)]"
+            className="appearance-none rounded-full border-[2.5px] border-[var(--color-paper)] bg-white px-4 py-2 pr-10 text-sm font-bold text-[var(--color-paper)] shadow-[4px_5px_0_var(--color-soft)] focus:outline-none focus-visible:border-[var(--color-signal)]"
           >
             {scheduleLoading && <option value="">Loading rounds…</option>}
             {schedule?.map((r) => {
@@ -91,27 +91,18 @@ export default function Results() {
           </select>
           <svg
             className="pointer-events-none absolute right-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[var(--color-paper-dim)]"
-            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}
+            fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}
           >
             <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
           </svg>
         </div>
 
-        <div className="flex gap-1.5 rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)] p-1">
-          {SESSIONS.map((s) => (
-            <button
-              key={s.key}
-              onClick={() => setSession(s.key)}
-              className={`rounded-md px-3.5 py-1.5 text-xs font-medium transition-all ${
-                session === s.key
-                  ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
-                  : 'text-[var(--color-paper-dim)] hover:text-[var(--color-paper)]'
-              }`}
-            >
-              {s.label}
-            </button>
-          ))}
-        </div>
+        <SakugaTabs
+          label="Session"
+          options={SESSIONS.map((s) => ({ value: s.key, label: s.label }))}
+          selected={SESSIONS.findIndex((s) => s.key === session)}
+          onChange={(detail) => setSession(detail.value)}
+        />
       </div>
 
       {selectedRound && (
@@ -120,7 +111,7 @@ export default function Results() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-6"
         >
-          <h2 className="font-display text-2xl text-[var(--color-paper)] md:text-3xl">
+          <h2 className="text-2xl text-[var(--color-paper)] md:text-3xl">
             {selectedRound.name}
           </h2>
           <p className="mt-1 text-sm text-[var(--color-paper-dim)]">
@@ -130,7 +121,7 @@ export default function Results() {
       )}
 
       {error && (
-        <p className="mb-6 text-sm text-[var(--color-red-flag)]" role="alert">
+        <p className="mb-6 text-sm font-semibold text-[var(--color-red-flag)]" role="alert">
           Couldn't load results for this round.
         </p>
       )}
@@ -138,7 +129,7 @@ export default function Results() {
       {loading && <TableSkeleton />}
 
       {!loading && results && results.length === 0 && (
-        <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-[var(--color-hairline)] bg-[var(--color-panel)] px-6 py-16 text-center">
+        <div className="sakuga-card flex flex-col items-center justify-center gap-3 px-6 py-16 text-center">
           <p className="text-sm text-[var(--color-paper-dim)]">
             No results available yet for this session.
           </p>

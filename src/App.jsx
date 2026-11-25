@@ -1,6 +1,7 @@
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import Nav from './components/Nav'
 import Footer from './components/Footer'
+import SakugaToast from './components/sakuga/SakugaToast'
 import Home from './pages/Home'
 import Results from './pages/Results'
 import Schedule from './pages/Schedule'
@@ -13,7 +14,7 @@ export default function App() {
       <div className="flex min-h-screen flex-col">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-[var(--color-signal)] focus:px-4 focus:py-2 focus:text-[var(--color-ink)]"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:border-[2.5px] focus:border-[var(--color-paper)] focus:bg-[var(--color-signal)] focus:px-4 focus:py-2 focus:font-semibold focus:text-white"
         >
           Skip to content
         </a>
@@ -28,6 +29,7 @@ export default function App() {
           </Routes>
         </main>
         <Footer />
+        <SakugaToast />
       </div>
     </HashRouter>
   )

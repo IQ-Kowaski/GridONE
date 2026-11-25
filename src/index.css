@@ -1,51 +1,78 @@
 @import "tailwindcss";
 
 @theme {
-  --font-display: "Big Shoulders Display", sans-serif;
-  --font-body: "Inter", sans-serif;
-  --font-mono: "IBM Plex Mono", monospace;
+  --font-display: "Nunito", "Avenir Next", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-body: "Inter", -apple-system, "Segoe UI", system-ui, sans-serif;
+  --font-mono: "Inter", -apple-system, "Segoe UI", system-ui, sans-serif;
 
-  --color-ink: #101214;
-  --color-ink-2: #16181c;
-  --color-panel: #1a1d21;
-  --color-panel-2: #202327;
-  --color-hairline: #2a2e33;
-  --color-paper: #f2f1ec;
-  --color-paper-dim: #9ca3aa;
-  --color-signal: #ffb000;
-  --color-signal-dim: #8a6216;
-  --color-live: #33d6a6;
-  --color-red-flag: #e04338;
+  --color-ink: #ffffff;
+  --color-ink-2: #f4f3fc;
+  --color-panel: #ffffff;
+  --color-panel-2: #f4f3fc;
+  --color-hairline: #dcdaf0;
+  --color-paper: #1d1a4a;
+  --color-paper-dim: #8580b0;
+  --color-signal: #ff5fa8;
+  --color-signal-dim: #8f8df7;
+  --color-live: #5a4fd8;
+  --color-red-flag: #c2337a;
+  --color-soft: #b8b3ff;
 }
 
 @layer base {
+  :root {
+    --sk-card: #ffffff;
+    --sk-ink: #1d1a4a;
+    --sk-dim: #8580b0;
+    --sk-soft: #b8b3ff;
+    --sk-pri: #8f8df7;
+    --sk-pri-ink: #1d1a4a;
+    --sk-acc: #ff5fa8;
+    --sk-track: #dcdaf0;
+    --sk-r: 15px;
+    --sk-bw: 3.2px;
+    --sk-sh: 6px 7px 0 var(--sk-soft);
+    --sk-btn-sh: var(--sk-sh);
+    --sk-btn-line: var(--sk-ink);
+    --sk-alt-sh: var(--sk-sh);
+    --sk-alt-line: var(--sk-ink);
+    --sk-tick: var(--sk-ink);
+    --sk-fill: var(--sk-acc);
+    --sk-on-pri: #ffffff;
+  }
   html {
-    color-scheme: dark;
+    color-scheme: light;
     scroll-behavior: smooth;
+    overflow-x: clip;
+    background: var(--color-ink);
   }
   body {
+    margin: 0;
     background: var(--color-ink);
     color: var(--color-paper);
     font-family: var(--font-body);
+    font-size: 15px;
+    line-height: 1.45;
     -webkit-font-smoothing: antialiased;
     overscroll-behavior-y: none;
+    overflow-x: clip;
   }
+  a { color: inherit; }
   ::selection {
     background: var(--color-signal);
-    color: var(--color-ink);
+    color: #ffffff;
   }
   :focus-visible {
-    outline: 2px solid var(--color-signal);
+    outline: 2.5px solid var(--color-signal);
     outline-offset: 3px;
   }
-  table {
-    font-variant-numeric: tabular-nums;
-  }
-  .tnum {
-    font-variant-numeric: tabular-nums;
-  }
+  table { font-variant-numeric: tabular-nums; }
+  .tnum { font-variant-numeric: tabular-nums; }
   h1, h2, h3, .display {
     font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 800;
+    letter-spacing: -0.01em;
     text-wrap: balance;
   }
   @media (prefers-reduced-motion: reduce) {
@@ -59,12 +86,33 @@
 }
 
 @layer utilities {
-  .grain::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    pointer-events: none;
-    opacity: 0.035;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  .sakuga-card {
+    border: 1.5px solid var(--color-hairline);
+    border-radius: 18px;
+    background: #ffffff;
+    box-shadow: 6px 7px 0 var(--color-soft);
+  }
+  .sakuga-outline {
+    border: 3.2px solid var(--color-paper);
+    border-radius: 15px;
+    background: #ffffff;
+    box-shadow: 6px 7px 0 var(--color-soft);
+  }
+  .sakuga-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-signal-dim);
+  }
+  .stream-button::part(button) {
+    display: block;
+    width: 100%;
+    padding: 10px 14px;
+    border-width: 2.5px;
+    border-radius: 12px;
+    font: 600 14px/1.3 var(--font-body);
+    text-align: left;
   }
 }

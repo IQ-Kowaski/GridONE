@@ -1,10 +1,13 @@
 import { usePolling } from '../lib/usePolling'
 import { fetchDriverStandings, fetchConstructorStandings } from '../lib/api'
 import StandingsTable from '../components/StandingsTable'
+import SakugaProgress from '../components/sakuga/SakugaProgress'
 
-function TableSkeleton() {
+function TableSkeleton({ label }) {
   return (
-    <div className="h-64 animate-pulse rounded-lg border border-[var(--color-hairline)] bg-[var(--color-panel)]" />
+    <div className="sakuga-card flex min-h-64 items-center justify-center p-8">
+      <SakugaProgress label={label} />
+    </div>
   )
 }
 
@@ -20,22 +23,18 @@ export default function Standings() {
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-12 md:px-8 md:py-16">
-      <p className="mb-2 font-mono text-xs uppercase tracking-[0.25em] text-[var(--color-signal)]">
-        Championship points
-      </p>
-      <h1 className="mb-2 font-display text-4xl text-[var(--color-paper)] md:text-5xl">
-        Standings
-      </h1>
+      <p className="sakuga-eyebrow mb-2">Championship points</p>
+      <h1 className="mb-2 text-4xl text-[var(--color-paper)] md:text-5xl">Standings</h1>
       {updatedAt && (
-        <p className="mb-10 text-xs text-[var(--color-paper-dim)]">
+        <p className="mb-10 text-xs font-semibold text-[var(--color-paper-dim)]">
           Updated {updatedAt.toLocaleTimeString()} · refreshes automatically
         </p>
       )}
 
       <div className="grid grid-cols-1 gap-12 lg:grid-cols-2">
-        {dError && <p className="text-sm text-[var(--color-red-flag)]">Couldn't load driver standings.</p>}
+        {dError && <p className="text-sm font-semibold text-[var(--color-red-flag)]">Couldn't load driver standings.</p>}
         {dLoading && !drivers ? (
-          <TableSkeleton />
+          <TableSkeleton label="Loading driver standings" />
         ) : (
           drivers && (
             <StandingsTable
@@ -47,9 +46,9 @@ export default function Standings() {
           )
         )}
 
-        {cError && <p className="text-sm text-[var(--color-red-flag)]">Couldn't load constructor standings.</p>}
+        {cError && <p className="text-sm font-semibold text-[var(--color-red-flag)]">Couldn't load constructor standings.</p>}
         {cLoading && !constructors ? (
-          <TableSkeleton />
+          <TableSkeleton label="Loading constructor standings" />
         ) : (
           constructors && (
             <StandingsTable

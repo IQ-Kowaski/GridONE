@@ -23,10 +23,10 @@ export default function ResultsTable({ title: _title, rows, sessionType }) {
 
   return (
     <section aria-labelledby="results-heading">
-      <div className="overflow-hidden rounded-lg border border-[var(--color-hairline)]">
+      <div className="sakuga-card overflow-hidden">
         <table className="w-full border-collapse text-left">
           <thead>
-            <tr className="border-b border-[var(--color-hairline)] bg-[var(--color-panel-2)] text-xs uppercase tracking-[0.14em] text-[var(--color-paper-dim)]">
+            <tr className="border-b-[1.5px] border-[var(--color-hairline)] bg-[var(--color-panel-2)] text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-paper-dim)]">
               <th scope="col" className="w-14 px-3 py-2.5 md:px-4">Pos</th>
               <th scope="col" className="px-3 py-2.5 md:px-4">Driver</th>
               <th scope="col" className="hidden px-3 py-2.5 md:table-cell md:px-4">Car</th>
@@ -58,22 +58,22 @@ export default function ResultsTable({ title: _title, rows, sessionType }) {
                   layout
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.03, duration: 0.35, ease: 'easeOut' }}
-                  className="border-b border-[var(--color-hairline)] last:border-b-0 odd:bg-[var(--color-panel)] even:bg-[var(--color-ink-2)]"
+                  transition={{ type: 'spring', stiffness: 320, damping: 26, delay: i * 0.02 }}
+                  className="border-b-[1.5px] border-[var(--color-hairline)] last:border-b-0 odd:bg-white even:bg-[var(--color-panel-2)]"
                 >
                   <td className="px-3 py-3 md:px-4">
                     <span
-                      className={`tnum inline-flex h-7 w-7 items-center justify-center rounded-sm text-sm font-semibold ${
+                      className={`tnum inline-flex h-7 w-7 items-center justify-center rounded-lg text-sm font-extrabold ${
                         row.position === 1
-                          ? 'bg-[var(--color-signal)] text-[var(--color-ink)]'
-                          : 'bg-[var(--color-panel-2)] text-[var(--color-paper)]'
+                          ? 'bg-[var(--color-signal)] text-white'
+                          : 'border-2 border-[var(--color-hairline)] bg-white text-[var(--color-paper)]'
                       }`}
                     >
                       {row.position}
                     </span>
                   </td>
                   <td className="px-3 py-3 md:px-4">
-                    <div className="font-medium text-[var(--color-paper)]">{row.name}</div>
+                    <div className="font-bold text-[var(--color-paper)]">{row.name}</div>
                     <div className="text-xs text-[var(--color-paper-dim)]">{row.code}</div>
                   </td>
                   <td className="hidden px-3 py-3 text-sm text-[var(--color-paper-dim)] md:table-cell md:px-4">
@@ -99,7 +99,7 @@ export default function ResultsTable({ title: _title, rows, sessionType }) {
                   )}
                   {sessionType !== 'qualifying' && (
                     <td className="tnum hidden px-3 py-3 font-mono text-xs text-[var(--color-paper-dim)] sm:table-cell md:px-4">
-                      <span className={row.status === 'Finished' ? 'text-[var(--color-live)]' : ''}>
+                      <span className={row.status === 'Finished' ? 'font-semibold text-[var(--color-live)]' : ''}>
                         {row.time || row.status || '-'}
                       </span>
                     </td>
@@ -110,7 +110,7 @@ export default function ResultsTable({ title: _title, rows, sessionType }) {
                   {hasPoints && (
                     <td className="px-3 py-3 md:px-4">
                       <div className="flex items-center justify-end gap-2">
-                        <span className="tnum w-10 text-right font-semibold text-[var(--color-paper)]">
+                        <span className="tnum w-10 text-right font-bold text-[var(--color-paper)]">
                           {row.points}
                         </span>
                       </div>
