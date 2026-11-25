@@ -33,7 +33,7 @@ export default function Nav() {
           </span>
         </a>
 
-        <div className="order-3 w-full md:order-none md:w-auto md:flex md:flex-1 md:justify-center">
+        <div className="order-3 flex w-full justify-center md:order-none md:w-auto md:flex-1">
           <SakugaTabs
             className="nav-tabs"
             label="Primary navigation"
