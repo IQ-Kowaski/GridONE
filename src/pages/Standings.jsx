@@ -16,7 +16,9 @@ function TableSkeleton({ label }) {
 function prepare(rows, query, sort) {
   const q = query.trim().toLowerCase()
   const filtered = rows?.filter((r) =>
-    !q || [r.name, r.constructor, r.nationality].some((v) => v?.toLowerCase().includes(q))
+    !q || [r.name, r.code, r.constructor, r.nationality].some(
+      (v) => typeof v === 'string' && v.toLowerCase().includes(q)
+    )
   ) ?? []
   return [...filtered].sort((a, b) => sort === 'wins' ? b.wins - a.wins : b.points - a.points)
 }
