@@ -110,7 +110,9 @@
   sakuga-slider { margin-top: 0; }
   sakuga-checkbox, sakuga-radio, sakuga-rating { margin-top: 8px; }
   sakuga-input { --sk-input-width: 260px; }
-  sakuga-toggle.compact { transform: scale(0.82); transform-origin: left center; }
+  @media (max-width: 640px) {
+    sakuga-toggle.compact { transform: scale(0.82); transform-origin: left center; }
+  }
   .stream-button::part(button) {
     display: block;
     width: 100%;

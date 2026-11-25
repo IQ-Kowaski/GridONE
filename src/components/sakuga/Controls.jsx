@@ -11,11 +11,11 @@ function useEvent(ref, type, handler) {
   }, [type, ref])
 }
 
-export function SakugaToggle({ label, checked, onChange }) {
+export function SakugaToggle({ label, checked, onChange, className }) {
   const ref = useRef(null)
   useEvent(ref, 'change', () => onChange?.(ref.current.checked))
   useEffect(() => { ref.current.checked = checked }, [checked])
-  return <sakuga-toggle ref={ref} label={label} />
+  return <sakuga-toggle ref={ref} className={className} label={label} />
 }
 
 export function SakugaCheckbox({ checked, onChange, children }) {
