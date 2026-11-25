@@ -7,7 +7,12 @@ export default function Hero({ nextRace, children }) {
   return (
     <section className="relative overflow-hidden border-b-[1.5px] border-[var(--color-hairline)] bg-white">
       <div
-        className="pointer-events-none absolute -right-20 -top-20 hidden h-72 w-72 rounded-full border-[3px] border-[var(--color-soft)] md:block"
+        className="sk-float pointer-events-none absolute -right-20 -top-20 hidden h-72 w-72 rounded-full border-[3px] border-[var(--color-soft)] md:block"
+        aria-hidden="true"
+      />
+      <div
+        className="sk-float pointer-events-none absolute right-[18%] top-28 hidden h-10 w-10 rotate-12 rounded-[10px] border-[3px] border-[var(--color-signal)] md:block"
+        style={{ animationDelay: '-3s' }}
         aria-hidden="true"
       />
 

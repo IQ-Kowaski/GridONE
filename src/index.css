@@ -19,6 +19,11 @@
   --color-soft: #b8b3ff;
 }
 
+@keyframes sk-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
 @layer base {
   :root {
     --sk-card: #ffffff;
@@ -98,6 +103,7 @@
     background: #ffffff;
     box-shadow: 6px 7px 0 var(--color-soft);
   }
+  .sk-float { animation: sk-float 7s ease-in-out infinite; }
   .sakuga-eyebrow {
     font-family: var(--font-mono);
     font-size: 12px;
@@ -110,8 +116,10 @@
   sakuga-slider { margin-top: 0; }
   sakuga-checkbox, sakuga-radio, sakuga-rating { margin-top: 8px; }
   sakuga-input { --sk-input-width: 260px; }
+  sakuga-tabs.nav-tabs { margin-top: 0; }
   @media (max-width: 640px) {
     sakuga-toggle.compact { transform: scale(0.82); transform-origin: left center; }
+    sakuga-tabs.nav-tabs::part(tab) { padding: 8px 6px; font-size: 11px; }
   }
   .stream-button::part(button) {
     display: block;
